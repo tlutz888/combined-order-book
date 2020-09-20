@@ -7,7 +7,8 @@ const io = require('socket.io')(server);
 import cache from './cache';
 
 
-import poloController from './controllers/poloController'
+import poloController from './controllers/poloController';
+import bittrexController from './controllers/bittrexController';
 
 app.use(express.static('public'));
 
@@ -23,6 +24,7 @@ io.on('connection', (socket) => {
   // // if board has already been initialized, send state to client
   socket.on('getInitialState', () => {
     io.emit('poloUpdate', cache.poloBook)
+    io.emit('bittrexUpdate', cache)
     io.emit('response', 'hi')
   //   // if (cache.get('users')) io.emit('updateClientState', cache.get('state'));
   //   // else (io.emit('firstUser'));
@@ -43,4 +45,5 @@ const port = process.env.PORT || 3000;
 server.listen(3000, ()=> {
   console.log(`Server listening on port: ${port}`)
   poloController.connect();
+  bittrexController.connect();
 });

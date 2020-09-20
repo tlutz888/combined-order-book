@@ -1,8 +1,8 @@
 
-import cache from '../cache'
+import cache from '../cache';
 
+// todo
 type PoloUpdate = [
-
 ]
 
 type PoloResponseType = [
@@ -101,7 +101,6 @@ poloController.connect = (channel = "BTC_ETH") => {
           // console.log(Object.keys(update[1]))
           const [asks, bids] = update[1].orderBook;
           cache.poloBook = { asks, bids }
-          console.log(Object.keys(asks).length)
         }
         if (action === 'o') {
           // we have an order, need to update the cache

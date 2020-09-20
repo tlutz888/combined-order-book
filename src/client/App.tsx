@@ -12,6 +12,7 @@ const App = (props: AppProps) => {
 				socket.emit('getInitialState', (msg) =>console.log(msg))
 				socket.on('response', (msg) => console.log(msg))
 				socket.on('poloUpdate', (msg) => console.log(msg))
+				socket.on('bittrexUpdate', (msg) => console.log(msg))
 
 				// const res = await fetch('/api/sup');
 				// const greeting = await res.json();

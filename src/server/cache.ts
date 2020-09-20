@@ -4,7 +4,10 @@ const cache = {
     asks:{},
     bids:{}
   },
-  BittrexBook: {},
+  BittrexBook: {
+    asks:{},
+    bids:{}
+  },
 };
   // return {
   //   get: (key) => cache[key],
