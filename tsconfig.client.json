@@ -13,7 +13,8 @@
       ]
     },
     "include": [
-        "src/client/**/*"
+        "src/client/**/*",
+        "src/types/**/*"
     ],
     "exclude": [
         "node_modules"

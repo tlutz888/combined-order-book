@@ -4,7 +4,7 @@ const cache = {
     asks:{},
     bids:{}
   },
-  BittrexBook: {
+  bittrexBook: {
     asks:{},
     bids:{}
   },

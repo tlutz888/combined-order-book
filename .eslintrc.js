@@ -6,6 +6,8 @@ module.exports = {
     "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
   parserOptions: {
-    project: ['./tsconfig.client.json', './tsconfig.server.json'],
+    project: ['./tsconfig.client.json', './tsconfig.server.json', 
+    // './src/types/**'
+  ],
   },
 };
