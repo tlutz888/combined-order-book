@@ -6,6 +6,8 @@ import * as SignalRClient from 'bittrex-signalr-client';
 import { BittrexResponseType, ExchangeOrderType } from '../../types/objectTypes';
 import cache from '../cache';
 
+declare const io: Server;
+
 const bittrexController: any = {};
 
 bittrexController.connect = (channel = 'BTC-ETH') => {
@@ -68,6 +70,7 @@ bittrexController.connect = (channel = 'BTC-ETH') => {
             volume: quantity,
           },
         };
+        io.emit('update', rate, newOrder)
           // if it is an update, update the quantity in cache
         cache[rate] = { ...cache[rate], ...newOrder}
       });

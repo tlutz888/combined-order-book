@@ -22,9 +22,26 @@ const App: React.FC = () => {
       // setPoloOrderBook(msg.poloBook);
       // setBittrexOrderBook(msg.bittrexBook);
     });
+    socket.on('update', (rate: number, order: PriceOrderType) => {
+      console.log('got an update!!', rate, order);
+      // console.log(typeof rate)
+      // console.log('old state', orderBook[rate.toString()])
+      // setOrderBook({
+      //   ...orderBook,
+      //   rate: {
+      //     ...orderBook
+      //   }
+      // })
+      // setOrderBook(msg);
+      // setPoloOrderBook(msg.poloBook);
+      // setBittrexOrderBook(msg.bittrexBook);
+    });
+
+    
     return () => socket.disconnect();
   }, []);
 
+  console.log('******* ',orderBook['0.00000001'])
   // max volume to scale the size bars
   let maxVolume = 0;
   // round order book to correct decimal place
@@ -34,9 +51,9 @@ const App: React.FC = () => {
       maxVolume = Math.max(maxVolume, Object.entries(entry)[0][1].volume);
       const roundedPrice: string = Number(price).toFixed(decimals);
       if (!acc[roundedPrice]) acc[roundedPrice] = [entry];
-      else acc[roundedPrice] = [...acc[roundedPrice], entry];
+      else {
+        acc[roundedPrice] = [...acc[roundedPrice], entry];}
 
-      // console.log(maxVolume)
       return acc;
       // else if (acc[roundedPrice][])
       // const rounded = Number(entry[0]).toFixed(decimals)
