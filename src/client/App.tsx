@@ -1,19 +1,26 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
+import { socket } from './helpers/socket';
+
 
 const App = (props: AppProps) => {
-	const [greeting, setGreeting] = React.useState<string>('');
+	const [greeting, setGreeting] = useState<string>('');
 
-	React.useEffect(() => {
-		(async () => {
-			try {
-				const res = await fetch('/api/sup');
-				const greeting = await res.json();
-				setGreeting(greeting);
-			} catch (error) {
-				console.log(error);
-			}
-		})();
-	}, []);
+	useEffect(() => {
+		// (async () => {
+		// 	try {
+				console.log('socket: ', socket, socket.connected);
+				socket.emit('getInitialState', (msg) =>console.log(msg))
+				socket.on('response', (msg) => console.log(msg))
+				socket.on('poloUpdate', (msg) => console.log(msg))
+
+				// const res = await fetch('/api/sup');
+				// const greeting = await res.json();
+				// setGreeting(greeting);
+			// } catch (error) {
+			// 	console.log(error);
+			// }
+		// })();
+	});
 
 	return (
 		<div className="min-vh-100 d-flex justify-content-center align-items-center">
