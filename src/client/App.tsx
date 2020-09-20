@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import {
+  Col, ListGroup, ListGroupItem, Row, Navbar,, Container, ProgressBar
+} from 'react-bootstrap';
+import {
   BittrexOrderBookType, CacheType, PoloOrderBookType, PoloOrderType, PriceOrderType, RoundedOrderBookType,
 } from '../types/objectTypes';
 import PriceRow from './components/PriceRow';
 import { socket } from './helpers/socket';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = (props: AppProps) => {
-  const [decimals, setDecimals] = useState(4);
+  const [decimals, setDecimals] = useState(3);
 
   // const [bittrexOrderBook, setBittrexOrderBook] = useState<BittrexOrderBookType>({ asks: {}, bids: {} });
   // const [poloOrderBook, setPoloOrderBook] = useState<PoloOrderBookType>({ asks: {}, bids: {} });
@@ -36,7 +40,7 @@ const App = (props: AppProps) => {
   // });
   useEffect(() => {
     console.log('fetching all useeffect');
-    socket.emit('getFullBook', () => {});
+    socket.emit('getFullBook', () => { });
 
     socket.on('fullOrderBook', (msg: PriceOrderType) => {
       console.log('setting order books', msg);
@@ -48,65 +52,76 @@ const App = (props: AppProps) => {
     return () => socket.disconnect();
   }, []);
 
+  // max volume to scale the size bars
+  let maxVolume = 0;
   // round order book to correct decimal place
   const roundedOrderBook = Object.entries(orderBook).reduce(
     (acc: RoundedOrderBookType, [price, entry]) => {
-    // console.log(entry)
-      const roundedPrice: number = Number(price).toFixed(decimals);
+      // console.log('*******',Object.entries(entry)[0][1].volume)
+      maxVolume = Math.max(maxVolume, Object.entries(entry)[0][1].volume);
+      const roundedPrice: string = Number(price).toFixed(decimals);
       if (!acc[roundedPrice]) acc[roundedPrice] = [entry];
       else acc[roundedPrice] = [...acc[roundedPrice], entry];
 
+      // console.log(maxVolume)
       return acc;
-    // else if (acc[roundedPrice][])
-    // const rounded = Number(entry[0]).toFixed(decimals)
-    // console.log(rounded)
+      // else if (acc[roundedPrice][])
+      // const rounded = Number(entry[0]).toFixed(decimals)
+      // console.log(rounded)
     }, {},
   );
   // console.log('rounded orders:', Object.keys(roundedOrderBook));
   // console.log(Object.entries(roundedOrderBook)
   //   .sort((a, b) => Number(a[0]) - Number(b[0]))
   //   .slice(0, 100));
-
   return (
-    <div className="min-vh-100 d-flex justify-content-center align-items-center">
-      <div>
-        <input
-          value={decimals}
-          onChange={(e) => setDecimals(parseInt(e.target.value))}
-        />
+    <div>
+      <Row>
+      <Navbar fixed="top" className="nav">
+
+        <Col>
+        <ProgressBar variant="success" now={100} label={'Poloniex'} key={'polobar'} />
+          <h2>ASKS:</h2>
+
+        </Col>
+        <Col>
+          <input
+            value={decimals}
+            onChange={(e) => setDecimals(parseInt(e.target.value))}
+            />
+            <h3>PRICE:</h3>
+        </Col>
+        <Col>
+        <ProgressBar variant="danger" now={100} label={'Bittrex'} key={'bittbar'} />
+
+          <h2>BIDS:</h2>
+
+        </Col>
+
+      </Navbar>
+        </Row>
+      <ListGroup>
 
         {
-        Object.entries(roundedOrderBook)
+          Object.entries(roundedOrderBook)
           .sort((a, b) => Number(a[0]) - Number(b[0]))
           .map(([price, entries]) => (
-            <PriceRow
-              key={price}
-              {...{ price, entries }}
-            />
-          ))
+            <ListGroupItem key={`groupItem ${price}`}>
 
+                <PriceRow
+                  key={price}
+                  {...{ price, entries, maxVolume }}
+                  />
+
+              </ListGroupItem>
+            ))
+            
         }
-        {/* {Object.entries(orderBook.bids)
-          .sort((a, b) => a[0] - b[0])
-          .map(([price, volume]) => (
-            <PriceRow
-              {...{ price, volume }}
-              isAsk={false}
-            />
-        ))}
-        {Object.entries(orderBook.asks)
-          .sort((a, b) => a[0] - b[0])
-          .map(([price, volume]) => (
-            <PriceRow
-              {...{ price, volume }}
-              isAsk={true}
-            />
-        ))} */}
-      </div>
+      </ListGroup>
     </div>
   );
 };
 
-interface AppProps {}
+interface AppProps { }
 
 export default App;
