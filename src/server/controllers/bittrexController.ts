@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import * as util from 'util';
+import * as SignalRClient from 'bittrex-signalr-client';
 import { BittrexResponseType, ExchangeOrderType } from '../../types/objectTypes';
 import cache from '../cache';
-
-const util = require('util');
-const SignalRClient = require('bittrex-signalr-client');
 
 const bittrexController: any = {};
 
@@ -27,7 +29,6 @@ bittrexController.connect = (channel = 'BTC-ETH') => {
   client.on('orderBook', (data) => {
     console.log({ data });
     console.log(data.data.buy.slice(0, 10));
-    const sliced = data.data.buy.slice(0, 10);
 
     // set bids in the cache
     data.data.buy.forEach(({ rate, quantity }: BittrexResponseType) => {
@@ -57,6 +58,22 @@ bittrexController.connect = (channel = 'BTC-ETH') => {
       } else {
         cache[rate] = { ...newOrder };
       }
+    });
+    client.on('orderBookUpdate', (data) => {
+      console.log(util.format("Got order book update for pair '%s' : cseq = %d", data.pair, data.cseq), data.data.buy);
+      data.data.buy.forEach(({ action, rate, quantity }) => {
+        const newOrder: ExchangeOrderType = {
+          bittrex: {
+            isAsk: false,
+            volume: quantity,
+          },
+        };
+          // if it is an update, update the quantity in cache
+        cache[rate] = { ...cache[rate], ...newOrder}
+      });
+    });
+    client.on('trades', (data) => {
+      console.log(util.format("Got trades for pair '%s'", data.pair));
     });
 
     // console.log(cache.BittrexBook)

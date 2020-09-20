@@ -1,5 +1,7 @@
-import { ExchangeOrderType, FullOrderType } from '../../types/objectTypes';
+import * as NodeWebSocket from 'ws';
+import { ExchangeOrderType } from '../../types/objectTypes';
 import cache from '../cache';
+// const NodeWebSocket = require('ws');
 
 // todo
 type PoloUpdate = [
@@ -10,7 +12,6 @@ type PoloResponseType = [
   number?,
   PoloUpdate?
 ];
-const NodeWebSocket = require('ws');
 
 const poloController: any = {};
 
@@ -98,44 +99,41 @@ poloController.connect = (channel = 'BTC_ETH') => {
         if (action === 'i') {
           // console.log(Object.keys(update[1]))
           const [asks, bids] = update[1].orderBook;
-          console.log('*********', Object.entries(asks)[0])
+          console.log('*********', Object.entries(asks)[0]);
           Object.entries(asks).forEach(([rate, quantity]) => {
             const newOrder: ExchangeOrderType = {
               poloniex: {
                 isAsk: true,
                 volume: Number(quantity),
-              } 
-            }
+              },
+            };
             if (cache[rate]) {
               cache[rate] = { ...cache[rate], ...newOrder };
             } else {
               cache[rate] = { ...newOrder };
             }
-
-          })
+          });
           Object.entries(bids).forEach(([rate, quantity]) => {
             const newOrder: ExchangeOrderType = {
               poloniex: {
                 isAsk: false,
                 volume: Number(quantity),
-              } 
-            }
+              },
+            };
             if (cache[rate]) {
-              cache[rate] = { ...cache[rate], ...newOrder }
+              cache[rate] = { ...cache[rate], ...newOrder };
             } else {
-              cache[rate] = { ...newOrder }
+              cache[rate] = { ...newOrder };
             }
-
-
-          })
+          });
           // cache.poloBook = { asks, bids };
           if (action === 'o') {
             // we have an order, need to update the cache
           }
-        };
-      })
-    };
-  };
+        }
+      });
+    }
+  });
 };
 
 export default poloController;

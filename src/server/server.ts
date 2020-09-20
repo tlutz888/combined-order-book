@@ -1,15 +1,16 @@
 import * as express from 'express';
-import { Server } from 'socket.io';
+import * as http from 'http';
+import * as Server from 'socket.io';
 import apiRouter from './routes';
 import cache from './cache';
 
 import poloController from './controllers/poloController';
 import bittrexController from './controllers/bittrexController';
-import { socket } from '../client/helpers/socket';
 
 const app = express();
-const server = require('http').createServer(app);
-const io: Server = require('socket.io')(server);
+
+const server = http.createServer(app);
+const io = Server(server);
 
 app.use(express.static('public'));
 

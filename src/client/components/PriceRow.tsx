@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import React from 'react';
 import {
-  Card,
   Col, Container, ProgressBar, Row,
 } from 'react-bootstrap';
 import { PriceRowProps } from '../../types/propTypes';
 
-const PriceRow: React.FC<PriceRowProps> = ({ price, entries, maxVolume }) => {
+const PriceRow: React.FC<PriceRowProps> = ({ price, entries }: PriceRowProps) => {
   // if (!volume) return <div />;
   // const { bittrex, poloniex } = volume;
   // const poloniexSize = `${Math.ceil(Number(poloniex) * 10000)} px`;
