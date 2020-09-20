@@ -1,14 +1,14 @@
-const express = require('express');
+import * as express from 'express';
 import apiRouter from './routes';
-
-const app = express();
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
 import cache from './cache';
-
 
 import poloController from './controllers/poloController';
 import bittrexController from './controllers/bittrexController';
+import { Server } from 'socket.io';
+
+const app = express();
+const server = require('http').createServer(app);
+const io: Server = require('socket.io')(server);
 
 app.use(express.static('public'));
 
@@ -20,13 +20,13 @@ io.on('connection', (socket) => {
   //   console.log(msg.users);
   //   // io.emit('updateClientState', cache.get('state'), senderId);
   // });
-  
+
   // // if board has already been initialized, send state to client
   socket.on('getInitialState', () => {
-    io.emit('poloUpdate', cache.poloBook)
-    io.emit('bittrexUpdate', cache.BittrexBook)
-    io.emit('full order book', cache)
-    io.emit('response', 'hi')
+    io.emit('poloUpdate', cache.poloBook);
+    io.emit('bittrexUpdate', cache.BittrexBook);
+    io.emit('full order book', cache);
+    io.emit('response', 'hi');
   //   // if (cache.get('users')) io.emit('updateClientState', cache.get('state'));
   //   // else (io.emit('firstUser'));
   });
@@ -39,12 +39,10 @@ io.on('connection', (socket) => {
 
 app.use(apiRouter);
 
-
-
 const port = process.env.PORT || 3000;
 // app.listen(port, () => console.log(`Server listening on port: ${port}`));
-server.listen(3000, ()=> {
-  console.log(`Server listening on port: ${port}`)
+server.listen(3000, () => {
+  console.log(`Server listening on port: ${port}`);
   poloController.connect();
   bittrexController.connect();
 });
