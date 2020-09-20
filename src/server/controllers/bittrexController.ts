@@ -1,3 +1,4 @@
+import { BittrexResponseType, ExchangeOrderType } from '../../types/objectTypes';
 import cache from '../cache';
 
 const util = require('util');
@@ -29,12 +30,33 @@ bittrexController.connect = (channel = 'BTC-ETH') => {
     const sliced = data.data.buy.slice(0, 10);
 
     // set bids in the cache
-    data.data.buy.forEach(({ rate, quantity }) => {
-      cache.bittrexBook.bids[rate] = quantity;
+    data.data.buy.forEach(({ rate, quantity }: BittrexResponseType) => {
+      const newOrder: ExchangeOrderType = {
+        bittrex: {
+          isAsk: false,
+          volume: quantity,
+        },
+      };
+      if (cache[rate]) {
+        cache[rate] = { ...cache[rate], ...newOrder };
+      } else {
+        cache[rate] = { ...newOrder };
+      }
+      // cache.bittrexBook.bids[rate] = quantity;
     });
     // set asks in the cache
-    data.data.sell.forEach(({ rate, quantity }) => {
-      cache.bittrexBook.asks[rate] = quantity;
+    data.data.sell.forEach(({ rate, quantity }: BittrexResponseType) => {
+      const newOrder: ExchangeOrderType = {
+        bittrex: {
+          isAsk: true,
+          volume: quantity,
+        },
+      };
+      if (cache[rate]) {
+        cache[rate] = { ...cache[rate], ...newOrder };
+      } else {
+        cache[rate] = { ...newOrder };
+      }
     });
 
     // console.log(cache.BittrexBook)

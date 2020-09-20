@@ -24,7 +24,6 @@ io.on('connection', (socket) => {
 
   // // if board has already been initialized, send state to client
   socket.on('getBittrexBook', () => {
-    console.log(cache.poloBook.asks);
     io.emit('bittrexFullBook', cache.bittrexBook);
     // io.emit('full order book', cache);
     io.emit('response', 'hi');

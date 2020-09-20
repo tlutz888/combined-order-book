@@ -1,18 +1,17 @@
-// const memoryCache = module.exports = function () {
-const cache = {
-  poloBook: {
-    asks:{},
-    bids:{}
-  },
-  bittrexBook: {
-    asks:{},
-    bids:{}
-  },
+import { BittrexOrderBookType, CacheType, PriceOrderType } from '../types/objectTypes';
+
+// const  = module.exports = function () {
+const cache: PriceOrderType = {
+  // asks: {},
+  // bids: {},
+  // poloBook: {
+  //   asks: {},
+  //   bids: {},
+  // },
+  // bittrexBook: {
+  //   asks: {},
+  //   bids: {},
+  // },
 };
-  // return {
-  //   get: (key) => cache[key],
-  //   set: (key, val) => cache[key] = val,
-  // };
-// };
 
 export default cache;
