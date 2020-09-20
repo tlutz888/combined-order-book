@@ -24,7 +24,8 @@ io.on('connection', (socket) => {
   // // if board has already been initialized, send state to client
   socket.on('getInitialState', () => {
     io.emit('poloUpdate', cache.poloBook)
-    io.emit('bittrexUpdate', cache)
+    io.emit('bittrexUpdate', cache.BittrexBook)
+    io.emit('full order book', cache)
     io.emit('response', 'hi')
   //   // if (cache.get('users')) io.emit('updateClientState', cache.get('state'));
   //   // else (io.emit('firstUser'));

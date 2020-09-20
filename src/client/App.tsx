@@ -11,8 +11,9 @@ const App = (props: AppProps) => {
 				console.log('socket: ', socket, socket.connected);
 				socket.emit('getInitialState', (msg) =>console.log(msg))
 				socket.on('response', (msg) => console.log(msg))
-				socket.on('poloUpdate', (msg) => console.log(msg))
-				socket.on('bittrexUpdate', (msg) => console.log(msg))
+				socket.on('poloUpdate', (msg) => console.log('poloUpdate:', msg))
+				socket.on('bittrexUpdate', (msg) => console.log('bittrexUpdate:', msg))
+				socket.on('full order book', (msg) => console.log('full order book:', msg))
 
 				// const res = await fetch('/api/sup');
 				// const greeting = await res.json();
