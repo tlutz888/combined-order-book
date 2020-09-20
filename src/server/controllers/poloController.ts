@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import * as NodeWebSocket from 'ws';
 import { ExchangeOrderType } from '../../types/objectTypes';
 import cache from '../cache';

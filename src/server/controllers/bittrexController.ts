@@ -1,16 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import * as util from 'util';
 import * as SignalRClient from 'bittrex-signalr-client';
 import { BittrexResponseType, ExchangeOrderType } from '../../types/objectTypes';
 import cache from '../cache';
 
-const bittrexController: any = {};
+const bittrexController = {};
 
 bittrexController.connect = (channel = 'BTC-ETH') => {
-  console.log(SignalRClient);
-
   const client = new SignalRClient({
     // websocket will be automatically reconnected if server does not respond to ping after 10s
     pingTimeout: 10000,
@@ -27,9 +24,6 @@ bittrexController.connect = (channel = 'BTC-ETH') => {
 
   // -- event handlers
   client.on('orderBook', (data) => {
-    console.log({ data });
-    console.log(data.data.buy.slice(0, 10));
-
     // set bids in the cache
     data.data.buy.forEach(({ rate, quantity }: BittrexResponseType) => {
       const newOrder: ExchangeOrderType = {
@@ -60,7 +54,6 @@ bittrexController.connect = (channel = 'BTC-ETH') => {
       }
     });
     client.on('orderBookUpdate', (data) => {
-      console.log(util.format("Got order book update for pair '%s' : cseq = %d", data.pair, data.cseq), data.data.buy);
       data.data.buy.forEach(({ action, rate, quantity }) => {
         const newOrder: ExchangeOrderType = {
           bittrex: {
@@ -69,32 +62,16 @@ bittrexController.connect = (channel = 'BTC-ETH') => {
           },
         };
           // if it is an update, update the quantity in cache
-        cache[rate] = { ...cache[rate], ...newOrder}
+        cache[rate] = { ...cache[rate], ...newOrder };
       });
     });
     client.on('trades', (data) => {
-      console.log(util.format("Got trades for pair '%s'", data.pair));
+      // console.log(util.format("Got trades for pair '%s'", data.pair));
     });
-
-    // console.log(cache.BittrexBook)
-    // console.log(cache)
-    // cache.BittrexBook.bids
-    console.log(
-      util.format(
-        "Got full order book for pair '%s' : cseq = %d",
-        data.pair,
-        data.cseq,
-      ),
-    );
   });
-  // client.on('orderBookUpdate', function(data){
-  //   console.log(util.format("Got order book update for pair '%s' : cseq = %d", data.pair, data.cseq));
-  // });
-  // client.on('trades', function(data){
-  //   console.log(util.format("Got trades for pair '%s'", data.pair));
-  // });
 
   // -- start subscription
+  // eslint-disable-next-line no-console
   console.log("=== Subscribing to 'USDT-BTC' pair");
   client.subscribeToMarkets([channel]);
 };

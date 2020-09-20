@@ -13,11 +13,9 @@ const App: React.FC = () => {
   const [orderBook, setOrderBook] = useState<PriceOrderType>({});
 
   useEffect(() => {
-    console.log('fetching all useeffect');
     socket.emit('getFullBook', () => { });
 
     socket.on('fullOrderBook', (msg: PriceOrderType) => {
-      console.log('setting order books', msg);
       setOrderBook(msg);
       // setPoloOrderBook(msg.poloBook);
       // setBittrexOrderBook(msg.bittrexBook);
