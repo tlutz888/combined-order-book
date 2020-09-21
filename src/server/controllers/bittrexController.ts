@@ -77,7 +77,7 @@ bittrexController.connect = (channel = 'BTC-ETH') => {
   client.subscribeToMarkets([channel]);
 
   // unsubscribe after 10 sec after cache has been updated
-  // setTimeout(() => client.unsubscribeFromOrders(), 10000);
+  setTimeout(() => client.unsubscribeFromOrders(), 10000);
 };
 
 export default bittrexController;
