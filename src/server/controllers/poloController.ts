@@ -1,34 +1,24 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import * as NodeWebSocket from 'ws';
-import { ExchangeOrderType } from '../../types/objectTypes';
+import { ControllerType, ExchangeOrderType } from '../../types/objectTypes';
 import cache from '../cache';
 // const NodeWebSocket = require('ws');
 
-// todo
-type PoloUpdate = [
-];
-
-type PoloResponseType = [
-  number,
-  number?,
-  PoloUpdate?
-];
-
-const poloController: any = {};
+const poloController: ControllerType = {};
 
 poloController.connect = (channel = 'BTC_ETH') => {
   const ws = new NodeWebSocket('wss://api2.poloniex.com');
 
   ws.on('open', () => {
-    // const channel = "BTC_ETH";
     const subscribeMessage = { command: 'subscribe', channel };
+    const unsubscribeMessage = { command: 'unsubscribe', channel };
 
     const request = JSON.stringify(subscribeMessage);
-    console.log('opened', { request });
+    const unsubRequest = JSON.stringify(unsubscribeMessage);
     ws.send(request);
-
-    // .catch(err => console.log(err))
-    // .then(res => console.log('hi'))
+    // unsubscribe after 10 seconds
+    setTimeout(() => ws.send(unsubRequest), 10000);
   });
 
   /*
@@ -89,9 +79,9 @@ poloController.connect = (channel = 'BTC_ETH') => {
       [1010] - heartbeat to show we're still connected
       */
   ws.on('message', (message) => {
-    const data: Array<any> = JSON.parse(message);
+    const data: Array<unknown> = JSON.parse(message);
 
-    const updates: Array<any> | undefined = data[2];
+    const updates: Array<unknown> = data[2];
     if (updates) {
       updates.forEach((update) => {
         const action = update[0];
@@ -100,7 +90,6 @@ poloController.connect = (channel = 'BTC_ETH') => {
         if (action === 'i') {
           // console.log(Object.keys(update[1]))
           const [asks, bids] = update[1].orderBook;
-          console.log('*********', Object.entries(asks)[0]);
           Object.entries(asks).forEach(([rate, quantity]) => {
             const newOrder: ExchangeOrderType = {
               poloniex: {
@@ -127,7 +116,6 @@ poloController.connect = (channel = 'BTC_ETH') => {
               cache[rate] = { ...newOrder };
             }
           });
-          // cache.poloBook = { asks, bids };
           if (action === 'o') {
             // we have an order, need to update the cache
           }

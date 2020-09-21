@@ -21,12 +21,12 @@ export type PriceOrderType = {
 };
 export type RoundedOrderBookType = {
   [key: string]: Array<ExchangeOrderType>;
-}
+};
 
 export type BittrexResponseType = {
   rate: string;
   quantity: number;
-}
+};
 export type ExchangeOrderType = {
   // exchange name
   [key: string]: {
@@ -48,5 +48,8 @@ export type CacheType = {
     bittrex?: BittrexOrderType;
     poloniex?: PoloOrderType;
   };
+};
 
+export type ControllerType = {
+  connect?: (channel: string) => void;
 };

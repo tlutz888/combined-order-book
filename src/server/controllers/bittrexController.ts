@@ -1,20 +1,21 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import * as SignalRClient from 'bittrex-signalr-client';
-import { BittrexResponseType, ExchangeOrderType } from '../../types/objectTypes';
+import { BittrexResponseType, ControllerType, ExchangeOrderType } from '../../types/objectTypes';
 import cache from '../cache';
 
-const bittrexController = {};
+const bittrexController: ControllerType = {};
 
 bittrexController.connect = (channel = 'BTC-ETH') => {
   const client = new SignalRClient({
     // websocket will be automatically reconnected if server does not respond to ping after 10s
     pingTimeout: 10000,
     watchdog: {
-      // automatically reconnect if we don't receive markets data for 30min (this is the default)
+      // automatically reconnect if we don't receive markets data for 30 sec
       markets: {
-        timeout: 1800000,
+        timeout: 10000,
         reconnect: true,
       },
     },
@@ -53,7 +54,7 @@ bittrexController.connect = (channel = 'BTC-ETH') => {
         cache[rate] = { ...newOrder };
       }
     });
-    client.on('orderBookUpdate', (data) => {
+    client.on('orderBookUpdate', (data: any) => {
       data.data.buy.forEach(({ action, rate, quantity }) => {
         const newOrder: ExchangeOrderType = {
           bittrex: {
@@ -72,8 +73,11 @@ bittrexController.connect = (channel = 'BTC-ETH') => {
 
   // -- start subscription
   // eslint-disable-next-line no-console
-  console.log("=== Subscribing to 'USDT-BTC' pair");
+  console.log(`=== Subscribing to '${channel}' pair`);
   client.subscribeToMarkets([channel]);
+
+  // unsubscribe after 10 sec after cache has been updated
+  // setTimeout(() => client.unsubscribeFromOrders(), 10000);
 };
 
 export default bittrexController;
