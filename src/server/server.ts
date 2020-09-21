@@ -47,10 +47,10 @@ io.on('connection', (socket) => {
 
 app.use(apiRouter);
 
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 // app.listen(port, () => console.log(`Server listening on port: ${port}`));
-server.listen(port, () => {
-  console.log(`Server listening on port: ${port}`);
+server.listen(PORT, () => {
+  console.log(`Server listening on port: ${PORT}`);
   poloController.connect();
   bittrexController.connect();
 });
